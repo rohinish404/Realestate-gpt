@@ -38,6 +38,8 @@ export interface ParsedFilters {
     readiness?: 'Ready to Move' | 'Under Construction';
     locality?: string;
     projectName?: string;
+    projectType?: 'RESIDENTIAL' | 'COMMERCIAL' | 'BOTH';
+    projectCategory?: 'TOWNSHIP' | 'STANDALONE' | 'COMPLEX';
 }
 
 export interface ChatResponse {

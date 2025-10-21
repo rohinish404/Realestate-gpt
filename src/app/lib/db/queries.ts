@@ -50,6 +50,14 @@ export async function searchPropertiesDB(filters: ParsedFilters) {
       conditions.push(ilike(properties.name, `%${filters.projectName}%`));
     }
 
+    if (filters.projectType) {
+      conditions.push(eq(properties.projectType, filters.projectType));
+    }
+
+    if (filters.projectCategory) {
+      conditions.push(eq(properties.projectCategory, filters.projectCategory));
+    }
+
     let query = db.select().from(properties);
 
     if (conditions.length > 0) {
@@ -69,16 +77,23 @@ export async function searchPropertiesDB(filters: ParsedFilters) {
       carpetArea: parseFloat(p.carpetArea || '0'),
     }));
 
-    const formattedCards: PropertyCard[] = formattedResults.map((p) => ({
-      title: `${p.bhk} Flat in ${p.locality}`,
-      cityLocality: `${p.city}, ${p.locality}`,
-      bhk: p.bhk || 'N/A',
-      price: formatPrice(p.basePrice),
-      projectName: p.name,
-      possessionStatus: p.readiness || 'Unknown',
-      amenities: p.amenities || ['Gym', 'Parking'],
-      ctaUrl: `/project/${p.id}`,
-    }));
+    const formattedCards: PropertyCard[] = formattedResults.map((p) => {
+      const propertyTypeLabel =
+        p.bhk === 'House_Villa' ? 'House/Villa' :
+        p.bhk === 'Office' || p.bhk === 'Office space' ? 'Office Space' :
+        'Flat';
+
+      return {
+        title: `${p.bhk === 'House_Villa' ? 'House/Villa' : p.bhk} in ${p.locality}`,
+        cityLocality: `${p.city}, ${p.locality}`,
+        bhk: p.bhk || 'N/A',
+        price: formatPrice(p.basePrice),
+        projectName: p.name,
+        possessionStatus: p.readiness || 'Unknown',
+        amenities: p.amenities || ['Gym', 'Parking'],
+        ctaUrl: `/project/${p.id}`,
+      };
+    });
 
     return { results: formattedResults, formattedCards };
   } catch (error) {
@@ -108,6 +123,40 @@ export async function semanticSearchDB(
       conditions.push(gte(properties.basePrice, minWithTolerance.toString()));
     }
 
+    if (filters.bhk) {
+      const bhkNormalized = filters.bhk.toLowerCase().replace(/\s+/g, '');
+
+      if (bhkNormalized === 'office' || bhkNormalized === 'officespace') {
+        conditions.push(
+          sql`(LOWER(REPLACE(${properties.bhk}, ' ', '')) = 'office' OR LOWER(REPLACE(${properties.bhk}, ' ', '')) = 'officespace')`
+        );
+      } else {
+        conditions.push(
+          sql`LOWER(REPLACE(${properties.bhk}, ' ', '')) = ${bhkNormalized}`
+        );
+      }
+    }
+
+    if (filters.locality) {
+      conditions.push(ilike(properties.locality, `%${filters.locality}%`));
+    }
+
+    if (filters.readiness) {
+      conditions.push(eq(properties.readiness, filters.readiness));
+    }
+
+    if (filters.projectName) {
+      conditions.push(ilike(properties.name, `%${filters.projectName}%`));
+    }
+
+    if (filters.projectType) {
+      conditions.push(eq(properties.projectType, filters.projectType));
+    }
+
+    if (filters.projectCategory) {
+      conditions.push(eq(properties.projectCategory, filters.projectCategory));
+    }
+
     const embeddingVector = `[${queryEmbedding.join(',')}]`;
 
     let query = db
@@ -128,16 +177,23 @@ export async function semanticSearchDB(
       carpetArea: parseFloat(p.carpetArea || '0'),
     }));
 
-    const formattedCards: PropertyCard[] = formattedResults.map((p) => ({
-      title: `${p.bhk} Flat in ${p.locality}`,
-      cityLocality: `${p.city}, ${p.locality}`,
-      bhk: p.bhk || 'N/A',
-      price: formatPrice(p.basePrice),
-      projectName: p.name,
-      possessionStatus: p.readiness || 'Unknown',
-      amenities: p.amenities || ['Gym', 'Parking'],
-      ctaUrl: `/project/${p.id}`,
-    }));
+    const formattedCards: PropertyCard[] = formattedResults.map((p) => {
+      const propertyTypeLabel =
+        p.bhk === 'House_Villa' ? 'House/Villa' :
+        p.bhk === 'Office' || p.bhk === 'Office space' ? 'Office Space' :
+        'Flat';
+
+      return {
+        title: `${p.bhk === 'House_Villa' ? 'House/Villa' : p.bhk} in ${p.locality}`,
+        cityLocality: `${p.city}, ${p.locality}`,
+        bhk: p.bhk || 'N/A',
+        price: formatPrice(p.basePrice),
+        projectName: p.name,
+        possessionStatus: p.readiness || 'Unknown',
+        amenities: p.amenities || ['Gym', 'Parking'],
+        ctaUrl: `/project/${p.id}`,
+      };
+    });
 
     return { results: formattedResults, formattedCards };
   } catch (error) {

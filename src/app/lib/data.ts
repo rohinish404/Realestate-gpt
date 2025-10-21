@@ -30,14 +30,22 @@ export function generateSummary(filters: ParsedFilters, results: Property[], ori
         parts.push(`I found ${results.length} properties for you. Showing the top matches.`);
     }
 
+    const formatPropertyType = (bhk: string) => {
+        if (bhk === 'House_Villa') return 'houses/villas';
+        if (bhk === 'Office' || bhk === 'Office space') return 'commercial spaces';
+        if (bhk === '1RK') return '1RK apartments';
+        return bhk;
+    };
+
     if (uniqueBHKs.length === 1) {
         if (uniqueLocalities.length > 0) {
             const localities = uniqueLocalities.slice(0, 3).join(', ');
             const moreText = uniqueLocalities.length > 3 ? ' and other nearby areas' : '';
-            parts.push(`These ${uniqueBHKs[0]} properties are primarily located in ${localities}${moreText}${uniqueCities.length > 0 ? ', ' + uniqueCities[0] : ''}.`);
+            const propertyType = formatPropertyType(uniqueBHKs[0]);
+            parts.push(`These ${propertyType} properties are primarily located in ${localities}${moreText}${uniqueCities.length > 0 ? ', ' + uniqueCities[0] : ''}.`);
         }
     } else if (uniqueBHKs.length > 1) {
-        const bhkList = uniqueBHKs.slice(0, 3).join(', ');
+        const bhkList = uniqueBHKs.slice(0, 3).map(formatPropertyType).join(', ');
         parts.push(`Options include ${bhkList} configurations${uniqueLocalities.length > 0 ? ' across ' + uniqueLocalities.slice(0, 2).join(' and ') : ''}.`);
     }
 
@@ -69,12 +77,20 @@ function generateNoResultsSummary(filters: ParsedFilters): string {
 
     parts.push("I couldn't find any properties that match all your criteria.");
 
+    const formatBhkForDisplay = (bhk: string) => {
+        if (bhk === 'House_Villa') return 'houses/villas';
+        if (bhk === 'Office' || bhk === 'Office space') return 'office spaces';
+        return bhk;
+    };
+
     const criteria = [];
-    if (filters.bhk) criteria.push(`${filters.bhk}`);
+    if (filters.bhk) criteria.push(formatBhkForDisplay(filters.bhk));
     if (filters.maxPrice) criteria.push(`under ${formatPrice(filters.maxPrice)}`);
     if (filters.locality) criteria.push(`in ${filters.locality}`);
     else if (filters.city) criteria.push(`in ${filters.city}`);
     if (filters.readiness) criteria.push(filters.readiness.toLowerCase());
+    if (filters.projectType) criteria.push(filters.projectType.toLowerCase());
+    if (filters.projectCategory) criteria.push(filters.projectCategory.toLowerCase());
 
     if (criteria.length > 0) {
         parts.push(`Looking for: ${criteria.join(', ')}.`);
