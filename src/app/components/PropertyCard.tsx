@@ -15,9 +15,7 @@ const PropertyCardComponent: React.FC<PropertyCard> = ({
     return (
         <div className={cn(
             "flex flex-col h-full p-5 bg-white rounded-2xl border-2 border-border-light overflow-hidden",
-            "shadow-[0_2px_8px_rgba(194,51,115,0.08)]",
-            "hover:shadow-[0_8px_24px_rgba(194,51,115,0.15)] hover:-translate-y-0.5",
-            "transition-all duration-300"
+            "shadow-[0_2px_8px_rgba(194,51,115,0.08)]"
         )}>
             <div className="px-4 pt-4 pb-3 border-b border-bg-lighter">
                 <h3 className="text-lg font-bold mb-2 text-primary-purple leading-[1.3]">
@@ -66,31 +64,6 @@ const PropertyCardComponent: React.FC<PropertyCard> = ({
                         )}
                     </div>
                 )}
-            </div>
-
-            <div className="px-4 pb-4 pt-3 border-t border-bg-lighter">
-                <a
-                    href={ctaUrl}
-                    className="inline-flex items-center gap-1 text-sm font-semibold text-primary-pink no-underline transition-all duration-200 hover:text-primary-pink-dark hover:gap-1.5"
-                >
-                    View Details
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="transition-transform duration-200"
-                    >
-                        <path
-                            d="M6 3L11 8L6 13"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </a>
             </div>
         </div>
     );
