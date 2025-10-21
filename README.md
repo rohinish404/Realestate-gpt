@@ -2,7 +2,7 @@
 
 An intelligent chatbot for discovering properties through natural language queries. Search for homes using conversational language instead of traditional filters.
 
-**Live Demo**: [Add your deployed URL here]
+**Live Demo**: [Link](https://realestate-gpt-beta.vercel.app/)
 
 ## Demo
 
