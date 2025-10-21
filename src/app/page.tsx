@@ -3,6 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage from './components/ChatMessage';
 import { Message, ChatResponse } from './lib/types';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/app/lib/utils';
 
 export default function HomePage() {
     const [messages, setMessages] = useState<Message[]>([
@@ -55,8 +58,8 @@ export default function HomePage() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50 font-sans">
-            <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-md z-10">
+        <div className="flex flex-col h-screen bg-bg-light text-primary-purple">
+            <header className="p-4 shadow-md z-10 bg-primary-pink text-white">
                 <h1 className="text-xl font-bold text-center">Property Finder Chatbot</h1>
             </header>
 
@@ -66,18 +69,18 @@ export default function HomePage() {
                 ))}
                 {loading && (
                     <div className="flex justify-start mb-4">
-                        <div className="p-3 rounded-lg bg-gray-100 text-gray-700 text-sm">
-                            Typing...
+                        <div className="p-4 rounded-2xl bg-muted text-muted-foreground text-base">
+                            Searching...
                         </div>
                     </div>
                 )}
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 bg-white border-t border-gray-200 flex items-center shadow-lg">
-                <input
+            <div className="p-4 border-t-2 border-border-light flex items-center gap-3 shadow-lg bg-white">
+                <Input
                     type="text"
-                    className="flex-1 border border-gray-300 rounded-full py-2 px-4 mr-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="flex-1 h-11 px-4 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 border-2 border-border-light rounded-xl"
                     placeholder="Type your property query here..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -88,13 +91,13 @@ export default function HomePage() {
                     }}
                     disabled={loading}
                 />
-                <button
+                <Button
                     onClick={handleSendMessage}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full shadow-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={loading || input.trim() === ''}
+                    className="h-11 px-5 text-sm font-semibold shrink-0 bg-primary-pink rounded-xl hover:bg-primary-pink-dark"
                 >
                     {loading ? 'Sending...' : 'Send'}
-                </button>
+                </Button>
             </div>
         </div>
     );

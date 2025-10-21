@@ -1,5 +1,6 @@
 import React from 'react';
-import { PropertyCard } from '@/app/lib/types';
+import type { PropertyCard } from '@/app/lib/types';
+import { cn } from '@/app/lib/utils';
 
 const PropertyCardComponent: React.FC<PropertyCard> = ({
     title,
@@ -12,25 +13,85 @@ const PropertyCardComponent: React.FC<PropertyCard> = ({
     ctaUrl
 }) => {
     return (
-        <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div>
-                <h3 className="text-lg font-semibold text-blue-700">{title}</h3>
-                <p className="text-gray-600 text-sm mt-1">{projectName} in {cityLocality}</p>
-                <p className="font-bold text-xl mt-2 text-green-700">{price}</p>
-                <p className="text-sm text-gray-500 mt-1">{bhk} | {possessionStatus}</p>
+        <div className={cn(
+            "flex flex-col h-full p-5 bg-white rounded-2xl border-2 border-border-light overflow-hidden",
+            "shadow-[0_2px_8px_rgba(194,51,115,0.08)]",
+            "hover:shadow-[0_8px_24px_rgba(194,51,115,0.15)] hover:-translate-y-0.5",
+            "transition-all duration-300"
+        )}>
+            <div className="px-4 pt-4 pb-3 border-b border-bg-lighter">
+                <h3 className="text-lg font-bold mb-2 text-primary-purple leading-[1.3]">
+                    {title}
+                </h3>
+                <p className="text-sm text-secondary-purple leading-[1.4]">
+                    {projectName} • {cityLocality}
+                </p>
+            </div>
+
+            <div className="flex-1 px-4 py-4 space-y-3">
+                <div>
+                    <p className="text-3xl font-bold text-primary-pink leading-none tracking-[-0.02em]">
+                        {price}
+                    </p>
+                </div>
+
+                <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-2 bg-bg-light rounded-lg border border-border-light">
+                        <span className="text-sm font-semibold text-secondary-purple">
+                            {bhk}
+                        </span>
+                        <span className="text-sm text-light-purple">
+                            •
+                        </span>
+                        <span className="text-sm font-medium text-secondary-purple">
+                            {possessionStatus}
+                        </span>
+                    </div>
+                </div>
+
                 {amenities && amenities.length > 0 && (
-                    <div className="text-xs text-gray-500 mt-3 flex flex-wrap gap-x-2">
-                        Amenities: {amenities.map((a, i) => (
-                            <span key={i} className="bg-gray-100 px-2 py-1 rounded-full text-gray-700">
-                                {a}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                        {amenities.slice(0, 3).map((amenity, index) => (
+                            <span
+                                key={index}
+                                className="inline-block px-3 py-1.5 text-xs font-medium bg-bg-lightest text-dark-purple rounded-full leading-[1.2]"
+                            >
+                                {amenity}
                             </span>
                         ))}
+                        {amenities.length > 3 && (
+                            <span className="inline-block px-3 py-1.5 text-xs font-medium bg-bg-lightest text-dark-purple rounded-full leading-[1.2]">
+                                +{amenities.length - 3} more
+                            </span>
+                        )}
                     </div>
                 )}
             </div>
-            <a href={ctaUrl} className="block mt-4 text-blue-500 hover:underline text-sm font-medium self-start">
-                View Details
-            </a>
+
+            <div className="px-4 pb-4 pt-3 border-t border-bg-lighter">
+                <a
+                    href={ctaUrl}
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-primary-pink no-underline transition-all duration-200 hover:text-primary-pink-dark hover:gap-1.5"
+                >
+                    View Details
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="transition-transform duration-200"
+                    >
+                        <path
+                            d="M6 3L11 8L6 13"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </a>
+            </div>
         </div>
     );
 };
